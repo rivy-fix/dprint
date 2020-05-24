@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="en"><head><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-55630862-3"></script><script>window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-55630862-3');</script><meta charset="utf-8"><title>dprint - Code Formatter</title><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="Description" content="A configurable and pluggable TypeScript and JSONC code formatter."><link rel="stylesheet" href="/style.css"></head><body><header id="appHeader"><h1 id="title"><a href="/">dprint</a></h1><div id="headerRight"><a href="/">Overview</a> <a href="/playground">Playground</a> <a href="/sponsor">Sponsor</a> <a href="https://github.com/dprint/dprint" rel="noopener noreferrer">View on GitHub</a></div></header><div id="content"><h2 id="jsonjsonc-code-formatter">JSON/JSONC Code Formatter</h2><h3 id="install-and-setup">Install and Setup</h3><p>Install plugin via:</p><pre><code class="bash language-bash">yarn add --dev dprint-plugin-jsonc
+<span class="hljs-comment"># or</span>
+npm install --save-dev dprint-plugin-jsonc</code></pre><p>Then add it to the configuration in <em>dprint.config.js</em>:</p><pre><code class="js language-js"><span class="hljs-comment">// @ts-check</span>
+<span class="hljs-keyword">const</span> { JsoncPlugin } = <span class="hljs-built_in">require</span>(<span class="hljs-string">"dprint-plugin-jsonc"</span>);
+
+<span class="hljs-comment">/** @type { import("dprint").Configuration } */</span>
+<span class="hljs-built_in">module</span>.exports.config = {
+    <span class="hljs-attr">projectType</span>: <span class="hljs-string">"openSource"</span>,
+    <span class="hljs-attr">plugins</span>: [
+        <span class="hljs-keyword">new</span> JsoncPlugin({
+            <span class="hljs-comment">// specify config here</span>
+            <span class="hljs-attr">indentWidth</span>: <span class="hljs-number">2</span>,
+        }),
+    ],
+};</code></pre><p>Links:</p><ul><li><a href="https://github.com/dprint/dprint/blob/master/packages/dprint-plugin-jsonc/lib/dprint-plugin-jsonc.d.ts">Type Declarations</a></li></ul><h3 id="configuration">Configuration</h3><p>There is currently no JSONC specific configuration beyond the global configuration (ex. <code>lineWidth</code>, <code>indentWidth</code>, etc.).</p></div></body></html>
