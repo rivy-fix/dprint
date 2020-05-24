@@ -33,7 +33,7 @@ npm install --save-dev dprint dprint-plugin-typescript dprint-plugin-jsonc</code
   }
 }</code></pre><p>Format:</p><pre><code class="bash language-bash">yarn format
 <span class="hljs-comment"># or</span>
-npm run format</code></pre><h2 id="plugins">Plugins</h2><ul><li><a href="https://dprint.dev/plugins/typescript">TypeScript/JavaScript</a></li><li><a href="https://dprint.dev/plugins/jsonc">JSON/JSONC</a></li></ul><h2 id="global-configuration">Global Configuration</h2><p>There are certain non-language specific configuration that can be specified. These are specified on the main configuration object, but can be overriden on a per-language basis (with the exception of <code>projectType</code>).</p><p>For example:</p><pre><code class="js language-js"><span class="hljs-built_in">module</span>.exports.config = {
+npm run format</code></pre><h2 id="plugins">Plugins</h2><ul><li><a href="https://dprint.dev/plugins/typescript">TypeScript/JavaScript</a></li><li><a href="https://dprint.dev/plugins/json">JSON/JSONC</a></li></ul><h2 id="global-configuration">Global Configuration</h2><p>There are certain non-language specific configuration that can be specified. These are specified on the main configuration object, but can be overriden on a per-language basis (with the exception of <code>projectType</code>).</p><p>For example:</p><pre><code class="js language-js"><span class="hljs-built_in">module</span>.exports.config = {
     <span class="hljs-attr">projectType</span>: <span class="hljs-string">"openSource"</span>,
     <span class="hljs-attr">lineWidth</span>: <span class="hljs-number">160</span>,
     <span class="hljs-attr">useTabs</span>: <span class="hljs-literal">true</span>,
