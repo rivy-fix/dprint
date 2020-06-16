@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="en"><head><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-55630862-3"></script><script async src="/scripts.js"></script><script>window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-55630862-3');</script><meta charset="utf-8"><title>Creating a Plugin - dprint - Code Formatter</title><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="description" content="<!-- description inject -->"><meta name="author" content="Dprint Code Formatting"><link rel="stylesheet" href="/style.css"></head><body><nav class="navbar" role="navigation" aria-label="main navigation"><div class="navbar-brand"><h1 class="title"><a href="/">dprint</a></h1><a role="button" id="navbarBurger" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarLinks"><span aria-hidden="true"></span> <span aria-hidden="true"></span> <span aria-hidden="true"></span></a></div><div class="navbar-menu" id="navbarLinks"><div class="navbar-end"><a class="navbar-item" href="/install">Getting Started</a> <a class="navbar-item" href="/playground">Playground</a> <a class="navbar-item" href="/pricing">Pricing</a> <a class="navbar-item" href="https://github.com/dprint/dprint" rel="noopener noreferrer">View on GitHub</a></div></div></nav><section class="section" id="content"><div class="columns"><aside class="menu column is-narrow" style="width: 210px"><p class="menu-label">Overview</p><ul class="menu-list"><li><a href="/install">Install</a></li><li><a href="/setup">Setup</a></li><li><a href="/config">Configuration</a></li><li><a href="/cli">CLI</a></li></ul><p class="menu-label">Plugins</p><ul class="menu-list"><li><a href="/plugins/typescript">TypeScript / JavaScript</a><ul><li><a href="/plugins/typescript/config">Configuration</a></li></ul></li><li><a href="/plugins/json">JSON</a><ul><li><a href="/plugins/json/config">Configuration</a></li></ul></li><li><a href="/plugin-dev">Creating a Plugin</a></li></ul></aside><div id="content-body" class="container column"><h1 id="creating-a-plugin">Creating a Plugin</h1><p>Plugins can be written in any language that supports compiling to a WebAssembly file (<em>.wasm</em>).</p><h2 id="rust">Rust</h2><p>Here's an example Rust plugin created with the <code>generate_plugin_code</code> macro from <a href="https://crates.io/crates/dprint-core"><code>dprint-core</code></a>.</p><pre><code class="rust language-rust"><span class="hljs-keyword">use</span> std::path::PathBuf;
+<span class="hljs-keyword">use</span> std::collections::HashMap;
+<span class="hljs-keyword">use</span> serde::{Serialize, Deserialize};
+<span class="hljs-keyword">use</span> dprint_core::generate_plugin_code;
+<span class="hljs-keyword">use</span> dprint_core::configuration::{
+    GlobalConfiguration,
+    ResolveConfigurationResult,
+    get_unknown_property_diagnostics,
+};
+
+<span class="hljs-meta">#[derive(Clone, Serialize, Deserialize)]</span>
+<span class="hljs-meta">#[serde(rename_all = <span class="hljs-meta-string">"camelCase"</span>)]</span>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Configuration</span></span> {
+    <span class="hljs-comment">// add configuration properties here</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">resolve_config</span></span>(
+    config: HashMap&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">String</span>&gt;,
+    global_config: &amp;GlobalConfiguration,
+) -&gt; ResolveConfigurationResult&lt;Configuration&gt; {
+    <span class="hljs-comment">// implement...</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">get_plugin_config_key</span></span>() -&gt; <span class="hljs-built_in">String</span> {
+    <span class="hljs-comment">// return the JSON object key name used in the configuration file</span>
+    <span class="hljs-comment">// ex. String::from("json")</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">get_plugin_file_extensions</span></span>() -&gt; <span class="hljs-built_in">Vec</span>&lt;<span class="hljs-built_in">String</span>&gt; {
+    <span class="hljs-comment">// return the file extensions this plugin will format</span>
+    <span class="hljs-comment">// ex. vec![String::from("json")]</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">get_plugin_help_url</span></span>() -&gt; <span class="hljs-built_in">String</span> {
+    <span class="hljs-comment">// return the help url of the plugin</span>
+    <span class="hljs-comment">// ex. String::from("https://dprint.dev/plugins/json")</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">get_plugin_config_schema_url</span></span>() -&gt; <span class="hljs-built_in">String</span> {
+    <span class="hljs-comment">// for now, return an empty string. Return a schema url once VSCode</span>
+    <span class="hljs-comment">// supports $schema properties in descendant objects:</span>
+    <span class="hljs-comment">// https://github.com/microsoft/vscode/issues/98443</span>
+    <span class="hljs-built_in">String</span>::new()
+}
+
+<span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">get_plugin_license_text</span></span>() -&gt; <span class="hljs-built_in">String</span> {
+    std::<span class="hljs-built_in">str</span>::from_utf8(include_bytes!(<span class="hljs-string">"../LICENSE"</span>)).unwrap().into()
+}
+
+<span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">format_text</span></span>(
+    file_path: &amp;PathBuf,
+    file_text: &amp;<span class="hljs-built_in">str</span>,
+    config: &amp;Configuration,
+) -&gt; <span class="hljs-built_in">Result</span>&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">String</span>&gt; {
+    <span class="hljs-comment">// implement...</span>
+}
+
+generate_plugin_code!();</code></pre><p>Add the following to <em>Cargo.toml</em>:</p><pre><code class="toml language-toml"><span class="hljs-section">[lib]</span>
+<span class="hljs-attr">crate-type</span> = [<span class="hljs-string">"lib"</span>, <span class="hljs-string">"cdylib"</span>]</code></pre><p>Then finally, compile with:</p><pre><code class="bash language-bash">cargo build --release --target=wasm32-unknown-unknown</code></pre><h2 id="other-languages">Other Languages</h2><p>If you are interested in implementing plugins in another language that supports compiling to a <em>.wasm</em> file, please <a href="https://github.com/dprint/dprint/issues/new?template=other.md">open an issue</a> and I will try to help point you in the right direction.</p></div></div></section><footer class="footer"><div><div class="level"><div class="level-left"><p class="level-item"><a href="/">Home</a></p><p class="level-item"><a href="/contact">Contact Us</a></p><p class="level-item"><a href="/privacy-policy">Privacy Policy</a></p></div><div class="level-right"><p class="level-item"><a href="https://twitter.com/dprintfmt">Twitter</a></p><p class="level-item"><a href="https://github.com/dprint">GitHub</a></p></div></div></div></footer></body></html>
