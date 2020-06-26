@@ -66,7 +66,7 @@ export interface PluginInfo {
  * @remarks This is the most efficient way to create a formatter.
  * @param response - The streaming source to create the formatter from.
  */
-export function createStreaming(response: Response | PromiseLike<Response>): Promise<Formatter> {
+export function createStreaming(response: Promise<Response>): Promise<Formatter> {
     if (WebAssembly.instantiateStreaming == null) {
         return getArrayBuffer()
             .then(buffer => createFromBuffer(buffer));
@@ -197,9 +197,9 @@ export function createFromInstance(wasmInstance: WebAssembly.Instance): Formatte
         function getPluginConfigWithStringProps() {
             // Need to convert all the properties to strings so
             // they can be deserialized to a HashMap<String, String>.
-            const newPluginConfig = {};
+            const newPluginConfig: { [key: string]: string; } = {};
             for (const key of Object.keys(pluginConfig)) {
-                newPluginConfig[key] = pluginConfig[key].toString();
+                newPluginConfig[key] = (pluginConfig as any)[key].toString();
             }
             return newPluginConfig;
         }
