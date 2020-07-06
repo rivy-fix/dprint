@@ -9,7 +9,7 @@
     lineWidth: <span class="hljs-number">80</span>,
 };
 <span class="hljs-keyword">const</span> tsFormatter = <span class="hljs-keyword">await</span> createStreaming(
-    fetch(<span class="hljs-string">"https://plugins.dprint.dev/typescript-x.x.x.wasm"</span>)
+    fetch(<span class="hljs-string">"https://plugins.dprint.dev/typescript-x.x.x.wasm"</span>),
 );
 
 tsFormatter.setConfig(globalConfig, {
