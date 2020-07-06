@@ -64,7 +64,7 @@ export interface PluginInfo {
 /**
  * Creates the web assembly import object, if necessary.
  */
-export function createImportObject(): WebAssembly.Imports {
+export function createImportObject(): any /*: WebAssembly.Imports*/ {
     // for now, use an identity object
     return {
         dprint: {
