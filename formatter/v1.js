@@ -3,7 +3,25 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 exports.__esModule = true;
-exports.createFromInstance = exports.createFromBuffer = exports.createStreaming = void 0;
+exports.createFromInstance = exports.createFromBuffer = exports.createStreaming = exports.createImportObject = void 0;
+/**
+ * Creates the web assembly import object, if necessary.
+ */
+function createImportObject() {
+    // for now, use an identity object
+    return {
+        dprint: {
+            "host_clear_bytes": function () { },
+            "host_read_buffer": function () { },
+            "host_write_buffer": function () { },
+            "host_take_file_path": function () { },
+            "host_format": function () { return 0; },
+            "host_get_formatted_text": function () { return 0; },
+            "host_get_error_text": function () { return 0; },
+        },
+    };
+}
+exports.createImportObject = createImportObject;
 /**
  * Creates a formatter from the specified streaming source.
  * @remarks This is the most efficient way to create a formatter.
@@ -15,7 +33,7 @@ function createStreaming(response) {
             .then(function (buffer) { return createFromBuffer(buffer); });
     }
     else {
-        return WebAssembly.instantiateStreaming(response)
+        return WebAssembly.instantiateStreaming(response, createImportObject())
             .then(function (obj) { return createFromInstance(obj.instance); });
     }
     function getArrayBuffer() {
@@ -37,7 +55,7 @@ exports.createStreaming = createStreaming;
  */
 function createFromBuffer(wasmModuleBuffer) {
     var wasmModule = new WebAssembly.Module(wasmModuleBuffer);
-    var wasmInstance = new WebAssembly.Instance(wasmModule);
+    var wasmInstance = new WebAssembly.Instance(wasmModule, createImportObject());
     return createFromInstance(wasmInstance);
 }
 exports.createFromBuffer = createFromBuffer;
