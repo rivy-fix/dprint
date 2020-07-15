@@ -29,7 +29,16 @@ json: {
   "lineWidth": 160,
   "newLineKind": "lf",
   "useTabs": false
-}</code></pre><h3 id="verbose">Verbose</h3><p>It is sometimes useful to see what's going on under the hood. For those cases, run dprint with the <code>--verbose</code> flag.</p><p>For example:</p><pre><code class="bash language-bash">dprint check --verbose</code></pre><p>Example output:</p><pre><code class="text language-text">[VERBOSE]: Getting cache directory.
+}</code></pre><h3 id="outputting-format-times">Outputting format times</h3><p>It can be useful to know what files take a long time to format as you may consider skipping them. To see this information, use the following command:</p><pre><code class="bash language-bash">dprint output-format-times</code></pre><p>Example output:</p><pre><code class="text language-text">0ms - C:\dev\my-project\.dprintrc.json
+0ms - C:\dev\my-project\README.md
+1ms - C:\dev\my-project\other-file.md
+2ms - C:\dev\my-project\package.json
+2ms - C:\dev\my-project\my-markdown-file.md
+4ms - C:\dev\my-project\test.ts
+5ms - C:\dev\my-project\docs\info.md
+16ms - C:\dev\my-project\my-file.ts
+46ms - C:\dev\my-project\docs\overview.md
+54ms - C:\dev\my-project\build.js</code></pre><h3 id="verbose">Verbose</h3><p>It is sometimes useful to see what's going on under the hood. For those cases, run dprint with the <code>--verbose</code> flag.</p><p>For example:</p><pre><code class="bash language-bash">dprint check --verbose</code></pre><p>Example output:</p><pre><code class="text language-text">[VERBOSE]: Getting cache directory.
 [VERBOSE]: Reading file: C:\Users\user\AppData\Local\Dprint\Dprint\cache\cache-manifest.json
 [VERBOSE]: Checking path exists: ./.dprintrc.json
 [VERBOSE]: Reading file: V:\dev\my-project\.dprintrc.json
