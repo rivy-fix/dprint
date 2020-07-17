@@ -53,11 +53,11 @@
     <span class="hljs-string">"https://dprint.dev/path/to/config/file.v1.json"</span>,
     <span class="hljs-string">"https://dprint.dev/path/to/config/other.v1.json"</span>
   ]
-}</code></pre><p>Note: The <code>includes</code> and <code>excludes</code> of extended configuration is ignored for security reasons so you will need to specify them in the main configuration file or via the CLI.</p><h2 id="incremental">Incremental</h2><p>You may specify to only format files that have changed since the last time you ran <code>dprint fmt</code> by specifying <code>"incremental": true</code>:</p><pre><code class="jsonc language-jsonc">{
+}</code></pre><p>Note: The <code>includes</code> and <code>excludes</code> of extended configuration is ignored for security reasons so you will need to specify them in the main configuration file or via the CLI.</p><h2 id="incremental">Incremental</h2><p>You may specify to only format files that have changed since the last time you formatted the code:</p><pre><code class="jsonc language-jsonc">{
   <span class="hljs-comment">// etc...</span>
   <span class="hljs-attr">"incremental"</span>: <span class="hljs-literal">true</span>
   <span class="hljs-comment">// etc...</span>
-}</code></pre><p>Alternatively, you may specify an <code>--incremental</code> flag on the CLI:</p><pre><code class="bash language-bash">dprint fmt --incremental</code></pre><p>Doing this will drastically improve performance.</p><h2 id="global-configuration">Global Configuration</h2><p>There are certain non-language specific configuration that can be specified. These are specified on the main configuration object, but can be overridden on a per-language basis.</p><p>For example:</p><pre><code class="json language-json">{
+}</code></pre><p>Alternatively, use an <code>--incremental</code> flag on the CLI:</p><pre><code class="bash language-bash">dprint fmt --incremental</code></pre><p>Doing this will drastically improve performance.</p><h2 id="global-configuration">Global Configuration</h2><p>There are certain non-language specific configuration that can be specified. These are specified on the main configuration object, but can be overridden on a per-language basis.</p><p>For example:</p><pre><code class="json language-json">{
   <span class="hljs-attr">"projectType"</span>: <span class="hljs-string">"openSource"</span>,
   <span class="hljs-attr">"lineWidth"</span>: <span class="hljs-number">160</span>,
   <span class="hljs-attr">"useTabs"</span>: <span class="hljs-literal">true</span>,
