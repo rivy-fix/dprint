@@ -1,97 +1,9 @@
-let formatter;
-let config;
-let nextFormat;
-
-onmessage = function(e) {
-    switch (e.data.type) {
-        case "LoadUrl": {
-            loadUrl(e.data.url);
-            break;
-        }
-        case "SetConfig": {
-            setConfig(e.data.config);
-            break;
-        }
-        case "Format": {
-            format(e.data.filePath, e.data.fileText);
-            break;
-        }
-    }
-};
-
-function loadUrl(url) {
-    formatter = fetch(url)
-        .then(response => response.arrayBuffer())
-        .then(wasmModuleBuffer => {
-            const newFormatter = createFromBuffer(wasmModuleBuffer);
-
-            if (config) {
-                setConfigSync(newFormatter, config);
-            }
-
-            if (nextFormat) {
-                formatSync(newFormatter, nextFormat.filePath, nextFormat.fileText);
-            }
-
-            return newFormatter;
-        });
-
-    formatter.catch(err => postError(err));
-}
-
-function setConfig(config) {
-    config = config;
-
-    if (formatter) {
-        formatter.then(f => {
-            setConfigSync(f, config);
-            formatSync(f, nextFormat.filePath, nextFormat.fileText);
-        });
-    }
-}
-
-function format(filePath, fileText) {
-    nextFormat = { filePath, fileText };
-
-    if (formatter) {
-        formatter.then(f => formatSync(f, filePath, fileText));
-    }
-}
-
-function setConfigSync(f, config) {
-    doHandlingError(() => f.setConfig({}, config));
-}
-
-function formatSync(f, filePath, fileText) {
-    let result;
-    try {
-        result = f.formatText(filePath, fileText);
-    } catch (err) {
-        result = err.message;
-    }
-    postMessage({
-        type: "Format",
-        text: result,
-    });
-}
-
-function doHandlingError(action) {
-    try {
-        action();
-    } catch (err) {
-        postError(err);
-    }
-}
-
-function postError(err) {
-    postMessage({
-        type: "Error",
-        message: err.message,
-    });
-}
-
-// TODO: DON'T COPY AND PASTE THIS HERE
-
+"use strict";
+// Copyright 2020 by David Sherret. All rights reserved.
+// This work is licensed under the terms of the MIT license.
+// For a copy, see <https://opensource.org/licenses/MIT>.
+exports.__esModule = true;
+exports.createFromInstance = exports.createFromBuffer = exports.createStreaming = exports.createImportObject = void 0;
 /**
  * Creates the web assembly import object, if necessary.
  */
@@ -99,23 +11,44 @@ function createImportObject() {
     // for now, use an identity object
     return {
         dprint: {
-            "host_clear_bytes": function() {},
-            "host_read_buffer": function() {},
-            "host_write_buffer": function() {},
-            "host_take_file_path": function() {},
-            "host_format": function() {
-                return 0;
-            },
-            "host_get_formatted_text": function() {
-                return 0;
-            },
-            "host_get_error_text": function() {
-                return 0;
-            },
+            "host_clear_bytes": function () { },
+            "host_read_buffer": function () { },
+            "host_write_buffer": function () { },
+            "host_take_file_path": function () { },
+            "host_format": function () { return 0; },
+            "host_get_formatted_text": function () { return 0; },
+            "host_get_error_text": function () { return 0; },
         },
     };
 }
-
+exports.createImportObject = createImportObject;
+/**
+ * Creates a formatter from the specified streaming source.
+ * @remarks This is the most efficient way to create a formatter.
+ * @param response - The streaming source to create the formatter from.
+ */
+function createStreaming(response) {
+    if (WebAssembly.instantiateStreaming == null) {
+        return getArrayBuffer()
+            .then(function (buffer) { return createFromBuffer(buffer); });
+    }
+    else {
+        return WebAssembly.instantiateStreaming(response, createImportObject())
+            .then(function (obj) { return createFromInstance(obj.instance); });
+    }
+    function getArrayBuffer() {
+        if (isResponse(response)) {
+            return response.arrayBuffer();
+        }
+        else {
+            return response.then(function (response) { return response.arrayBuffer(); });
+        }
+        function isResponse(response) {
+            return response.arrayBuffer != null;
+        }
+    }
+}
+exports.createStreaming = createStreaming;
 /**
  * Creates a formatter from the specified wasm module bytes.
  * @param wasmModuleBuffer - The buffer of the wasm module.
@@ -125,17 +58,13 @@ function createFromBuffer(wasmModuleBuffer) {
     var wasmInstance = new WebAssembly.Instance(wasmModule, createImportObject());
     return createFromInstance(wasmInstance);
 }
+exports.createFromBuffer = createFromBuffer;
 /**
  * Creates a formatter from the specified wasm instance.
  * @param wasmInstance - The web assembly instance.
  */
 function createFromInstance(wasmInstance) {
-    var _a = wasmInstance.exports, get_plugin_schema_version = _a.get_plugin_schema_version, set_file_path = _a.set_file_path,
-        get_formatted_text = _a.get_formatted_text, format = _a.format, get_error_text = _a.get_error_text, get_plugin_info = _a.get_plugin_info,
-        get_resolved_config = _a.get_resolved_config, get_config_diagnostics = _a.get_config_diagnostics, set_global_config = _a.set_global_config,
-        set_plugin_config = _a.set_plugin_config, get_license_text = _a.get_license_text, get_wasm_memory_buffer = _a.get_wasm_memory_buffer,
-        get_wasm_memory_buffer_size = _a.get_wasm_memory_buffer_size, add_to_shared_bytes_from_buffer = _a.add_to_shared_bytes_from_buffer,
-        set_buffer_with_shared_bytes = _a.set_buffer_with_shared_bytes, clear_shared_bytes = _a.clear_shared_bytes, reset_config = _a.reset_config;
+    var _a = wasmInstance.exports, get_plugin_schema_version = _a.get_plugin_schema_version, set_file_path = _a.set_file_path, get_formatted_text = _a.get_formatted_text, format = _a.format, get_error_text = _a.get_error_text, get_plugin_info = _a.get_plugin_info, get_resolved_config = _a.get_resolved_config, get_config_diagnostics = _a.get_config_diagnostics, set_global_config = _a.set_global_config, set_plugin_config = _a.set_plugin_config, get_license_text = _a.get_license_text, get_wasm_memory_buffer = _a.get_wasm_memory_buffer, get_wasm_memory_buffer_size = _a.get_wasm_memory_buffer_size, add_to_shared_bytes_from_buffer = _a.add_to_shared_bytes_from_buffer, set_buffer_with_shared_bytes = _a.set_buffer_with_shared_bytes, clear_shared_bytes = _a.clear_shared_bytes, reset_config = _a.reset_config;
     var pluginSchemaVersion = get_plugin_schema_version();
     var expectedPluginSchemaVersion = 2;
     if (pluginSchemaVersion !== expectedPluginSchemaVersion) {
@@ -146,28 +75,28 @@ function createFromInstance(wasmInstance) {
     var bufferSize = get_wasm_memory_buffer_size();
     var configSet = false;
     return {
-        setConfig: function(globalConfig, pluginConfig) {
+        setConfig: function (globalConfig, pluginConfig) {
             setConfig(globalConfig, pluginConfig);
         },
-        getConfigDiagnostics: function() {
+        getConfigDiagnostics: function () {
             setConfigIfNotSet();
             var length = get_config_diagnostics();
             return JSON.parse(receiveString(length));
         },
-        getResolvedConfig: function() {
+        getResolvedConfig: function () {
             setConfigIfNotSet();
             var length = get_resolved_config();
             return JSON.parse(receiveString(length));
         },
-        getPluginInfo: function() {
+        getPluginInfo: function () {
             var length = get_plugin_info();
             return JSON.parse(receiveString(length));
         },
-        getLicenseText: function() {
+        getLicenseText: function () {
             var length = get_license_text();
             return receiveString(length);
         },
-        formatText: function(filePath, fileText) {
+        formatText: function (filePath, fileText) {
             setConfigIfNotSet();
             sendString(filePath);
             set_file_path();
@@ -236,3 +165,4 @@ function createFromInstance(wasmInstance) {
         return new Uint8Array(wasmInstance.exports.memory.buffer, pointer, length);
     }
 }
+exports.createFromInstance = createFromInstance;
