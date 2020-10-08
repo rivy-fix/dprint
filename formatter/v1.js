@@ -28,7 +28,7 @@ exports.createImportObject = createImportObject;
  * @param response - The streaming source to create the formatter from.
  */
 function createStreaming(response) {
-    if (WebAssembly.instantiateStreaming == null) {
+    if (WebAssembly.instantiateStreaming == null || typeof (globalThis === null || globalThis === void 0 ? void 0 : globalThis.Deno) != null) {
         return getArrayBuffer()
             .then(function (buffer) { return createFromBuffer(buffer); });
     }

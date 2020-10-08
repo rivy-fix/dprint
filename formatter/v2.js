@@ -29,7 +29,8 @@ exports.createImportObject = createImportObject;
  * @param response - The streaming source to create the formatter from.
  */
 function createStreaming(response) {
-    if (WebAssembly.instantiateStreaming == null) {
+    // instantiateStreaming is not working in Deno, so revert back to the old way (issue #309)
+    if (WebAssembly.instantiateStreaming == null || typeof (globalThis === null || globalThis === void 0 ? void 0 : globalThis.Deno) != null) {
         return getArrayBuffer()
             .then(function (buffer) { return createFromBuffer(buffer); });
     }
