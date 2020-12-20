@@ -5,7 +5,7 @@
 exports.__esModule = true;
 exports.createFromInstance = exports.createFromBuffer = exports.createStreaming = exports.createImportObject = void 0;
 /**
- * Creates the web assembly import object, if necessary.
+ * Creates the WebAssembly import object, if necessary.
  */
 function createImportObject() {
     // for now, use an identity object
@@ -63,7 +63,7 @@ function createFromBuffer(wasmModuleBuffer) {
 exports.createFromBuffer = createFromBuffer;
 /**
  * Creates a formatter from the specified wasm instance.
- * @param wasmInstance - The web assembly instance.
+ * @param wasmInstance - The WebAssembly instance.
  */
 function createFromInstance(wasmInstance) {
     var _a = wasmInstance.exports, get_plugin_schema_version = _a.get_plugin_schema_version, set_file_path = _a.set_file_path, set_override_config = _a.set_override_config, get_formatted_text = _a.get_formatted_text, format = _a.format, get_error_text = _a.get_error_text, get_plugin_info = _a.get_plugin_info, get_resolved_config = _a.get_resolved_config, get_config_diagnostics = _a.get_config_diagnostics, set_global_config = _a.set_global_config, set_plugin_config = _a.set_plugin_config, get_license_text = _a.get_license_text, get_wasm_memory_buffer = _a.get_wasm_memory_buffer, get_wasm_memory_buffer_size = _a.get_wasm_memory_buffer_size, add_to_shared_bytes_from_buffer = _a.add_to_shared_bytes_from_buffer, set_buffer_with_shared_bytes = _a.set_buffer_with_shared_bytes, clear_shared_bytes = _a.clear_shared_bytes, reset_config = _a.reset_config;
