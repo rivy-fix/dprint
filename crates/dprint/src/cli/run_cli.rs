@@ -697,13 +697,29 @@ fn resolve_file_paths(config: &ResolvedConfig, args: &CliArgs, environment: &imp
         file_patterns.extend(if args.file_patterns.is_empty() {
             config.includes.clone() // todo: take from array?
         } else {
-            args.file_patterns.clone()
+            args.file_patterns.iter()
+                .map(|v| {
+                    if std::path::MAIN_SEPARATOR != '/' {
+                        v.replace(std::path::MAIN_SEPARATOR, "[/]")
+                    } else {
+                        v.clone()
+                    }
+                })
+                .collect::<Vec<String>>()
         });
 
         file_patterns.extend(if args.exclude_file_patterns.is_empty() {
             config.excludes.clone()
         } else {
-            args.exclude_file_patterns.clone()
+            args.file_patterns.iter()
+                .map(|v| {
+                    if std::path::MAIN_SEPARATOR != '/' {
+                        v.replace(std::path::MAIN_SEPARATOR, "[/]")
+                    } else {
+                        v.clone()
+                    }
+                })
+                .collect::<Vec<String>>()
         }.into_iter().map(|exclude| if exclude.starts_with("!") { exclude } else { format!("!{}", exclude) }));
 
         if !args.allow_node_modules {
