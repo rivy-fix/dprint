@@ -692,6 +692,8 @@ fn resolve_file_paths(config: &ResolvedConfig, args: &CliArgs, environment: &imp
     return Ok(file_paths);
 
     fn get_file_patterns(config: &ResolvedConfig, args: &CliArgs) -> Vec<String> {
+        #[allow(non_snake_case)]
+        let GLOB_PATH_SEPARATOR = '/';
         let mut file_patterns = Vec::new();
 
         file_patterns.extend(if args.file_patterns.is_empty() {
@@ -699,8 +701,8 @@ fn resolve_file_paths(config: &ResolvedConfig, args: &CliArgs, environment: &imp
         } else {
             args.file_patterns.iter()
                 .map(|v| {
-                    if std::path::MAIN_SEPARATOR != '/' {
-                        v.replace(std::path::MAIN_SEPARATOR, "[/]")
+                    if std::path::MAIN_SEPARATOR != GLOB_PATH_SEPARATOR && std::fs::metadata(v).map_or(false, |_| true) {
+                        v.replace(std::path::MAIN_SEPARATOR, &GLOB_PATH_SEPARATOR.to_string())
                     } else {
                         v.clone()
                     }
@@ -713,8 +715,8 @@ fn resolve_file_paths(config: &ResolvedConfig, args: &CliArgs, environment: &imp
         } else {
             args.file_patterns.iter()
                 .map(|v| {
-                    if std::path::MAIN_SEPARATOR != '/' {
-                        v.replace(std::path::MAIN_SEPARATOR, "[/]")
+                    if std::path::MAIN_SEPARATOR != GLOB_PATH_SEPARATOR && std::fs::metadata(v).map_or(false, |_| true) {
+                        v.replace(std::path::MAIN_SEPARATOR, &GLOB_PATH_SEPARATOR.to_string())
                     } else {
                         v.clone()
                     }
